@@ -137,12 +137,12 @@ function cardSelected(cardDiv) {
  * This function needs actual logic implementation.
  * @returns {boolean} True if valid set, otherwise false.
  */
-function isSet(cards) {
-   /*
-    * Implement logic to check if the cards form a valid set based on game rules.
-    * This is a placeholder function and needs actual logic implementation.
-    */
-   return true;
+function isSet() {
+  /*
+   * Implement logic to check if the cards form a valid set based on game rules.
+   * This is a placeholder function and needs actual logic implementation.
+   */
+  return true;
 }
 
 /**
@@ -153,27 +153,27 @@ function populateBoard() {
 
   const board = document.getElementById("board");
 
- while (board.children.length < MIN_CARDS_ON_BOARD) {
-   // Ensure there are always at least MIN_CARDS_ON_BOARD cards on the board
-   board.appendChild(generateUniqueCard(isEasy));
- }
+  while (board.children.length < MIN_CARDS_ON_BOARD) {
+    // Ensure there are always at least MIN_CARDS_ON_BOARD cards on the board
+    board.appendChild(generateUniqueCard(isEasy));
+  }
 }
 
 // Event listeners for buttons
 document.getElementById("start-btn").addEventListener("click", () => {
- toggleViews();
- startTimer();
- populateBoard();
+  toggleViews();
+  startTimer();
+  populateBoard();
 });
 
 document.getElementById("refresh-btn").addEventListener("click", populateBoard);
 
 document.getElementById("back-btn").addEventListener("click", () => {
- clearInterval(timer);
- toggleViews();
+  clearInterval(timer);
+  toggleViews();
 });
 
 // Initialize game setup on page load
 window.onload = () => {
- toggleViews(); // Start with menu view visible
+  toggleViews(); // Start with menu view visible
 };
