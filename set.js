@@ -1,3 +1,5 @@
+'use strict'; // Use the global form of 'use strict'
+
 // Constants for game attributes
 const ATTRIBUTES = {
   style: ["solid", "striped", "outline"],
@@ -11,13 +13,19 @@ let timer;
 let timeRemaining;
 let setsFound = 0;
 
-// Function to toggle between menu and game views
+/**
+ * Toggles between menu and game views.
+ */
 function toggleViews() {
   document.getElementById("menu-view").classList.toggle("hidden");
   document.getElementById("game-view").classList.toggle("hidden");
 }
 
-// Function to generate random attributes for a card
+/**
+ * Generates random attributes for a card.
+ * @param {boolean} isEasy - Whether the game is in easy mode.
+ * @returns {Object} The generated attributes.
+ */
 function generateRandomAttributes(isEasy) {
   let attributes = {};
   attributes.style = isEasy ? "solid" : randomChoice(ATTRIBUTES.style);
@@ -27,110 +35,141 @@ function generateRandomAttributes(isEasy) {
   return attributes;
 }
 
-// Helper function to get a random choice from an array
+/**
+ * Helper function to get a random choice from an array.
+ * @param {Array} array - The array to choose from.
+ * @returns {*} A random element from the array.
+ */
 function randomChoice(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-// Function to generate a unique card element
+/**
+ * Generates a unique card element.
+ * @param {boolean} isEasy - Whether the game is in easy mode.
+ * @returns {HTMLElement} The card element.
+ */
 function generateUniqueCard(isEasy) {
   const cardAttributes = generateRandomAttributes(isEasy);
   const cardDiv = document.createElement("div");
   cardDiv.classList.add("card");
 
   for (let i = 0; i < cardAttributes.count; i++) {
-  const img = document.createElement("img");
-  img.src = `img/${cardAttributes.style}-${cardAttributes.shape}-${cardAttributes.color}.png`;
-  cardDiv.appendChild(img);
+    const img = document.createElement("img");
+    img.src = `img/${cardAttributes.style}-${cardAttributes.shape}-${cardAttributes.color}.png`;
+    cardDiv.appendChild(img);
   }
 
   cardDiv.addEventListener("click", () => cardSelected(cardDiv));
   return cardDiv;
 }
 
-// Function to start the game timer
+/**
+ * Starts the game timer.
+ */
 function startTimer() {
-  const selectedTime = parseInt(document.getElementById("timing-options").value);
-  timeRemaining = selectedTime * 60; // Convert minutes to seconds
+  const selectedTime = parseInt(document.getElementById("timing-options").value, 10);
+  timeRemaining = selectedTime * SECONDS_IN_MINUTE; // Convert minutes to seconds
   updateTimerDisplay();
 
-  timer = setInterval(advanceTimer, 1000); // Update every second
+  timer = setInterval(advanceTimer, MILLISECONDS_IN_SECOND); // Update every second
 }
 
-// Function to advance the timer each second
+/**
+ * Advances the timer each second.
+ */
 function advanceTimer() {
   if (timeRemaining <= 0) {
-  clearInterval(timer);
-  alert("Time's up!");
-  toggleViews();
-  return;
+    clearInterval(timer);
+    console.warn("Time's up!"); // Replace alert with console warning
+    toggleViews();
+    return;
   }
 
   timeRemaining--;
   updateTimerDisplay();
 }
 
-// Function to update the timer display on the webpage
+/**
+ * Updates the timer display on the webpage.
+ */
 function updateTimerDisplay() {
-  const minutes = Math.floor(timeRemaining / 60);
-  const seconds = timeRemaining % 60;
+  const minutes = Math.floor(timeRemaining / SECONDS_IN_MINUTE);
+  const seconds = timeRemaining % SECONDS_IN_MINUTE;
 
-  document.getElementById("time").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  document.getElementById("time").textContent = `${minutes}:${seconds < TEN ? '0' : ''}${seconds}`;
 }
 
-// Function to handle card selection logic
+/**
+ * Handles card selection logic.
+ * @param {HTMLElement} cardDiv - The selected card element.
+ */
 function cardSelected(cardDiv) {
   cardDiv.classList.toggle("selected");
 
   const selectedCards = document.querySelectorAll(".card.selected");
 
-  if (selectedCards.length === 3) {
-  if (isSet(selectedCards)) {
-    setsFound++;
-    document.getElementById("sets-found").textContent = setsFound;
-    selectedCards.forEach(card => card.remove());
-  }
+  if (selectedCards.length === THREE_CARDS) {
+    if (isSet(selectedCards)) {
+      setsFound++;
+      document.getElementById("sets-found").textContent = setsFound;
+      selectedCards.forEach(card => card.remove());
+    }
 
-  selectedCards.forEach(card => card.classList.remove("selected"));
+    selectedCards.forEach(card => card.classList.remove("selected"));
 
-  if (document.querySelectorAll(".card").length < 12) {
-    populateBoard();
-  }
+    if (document.querySelectorAll(".card").length < MIN_CARDS_ON_BOARD) {
+      populateBoard();
+    }
   }
 }
 
-// Function to check if three cards form a valid set
+/**
+ * Checks if three cards form a valid set.
+ * @param {NodeList} cards - The selected cards.
+ * @returns {boolean} True if valid set, otherwise false.
+ */
 function isSet(cards) {
-   // Implement logic to check if the cards form a valid set based on game rules
-   // This is a placeholder function and needs actual logic implementation
-   return true;
+  // Implement logic to check if the cards form a valid set based on game rules
+  // This is a placeholder function and needs actual logic implementation
+  return true;
 }
 
-// Function to populate the board with cards
+/**
+ * Populates the board with cards.
+ */
 function populateBoard() {
-   const isEasy = document.getElementById("difficulty-options").value === "easy";
-   const board = document.getElementById("board");
+  const isEasy = document.getElementById("difficulty-options").value === "easy";
 
-   while (board.children.length < 12) { // Ensure there are always at least 12 cards on the board
-   board.appendChild(generateUniqueCard(isEasy));
-   }
+  const board = document.getElementById("board");
+
+  while (board.children.length < MIN_CARDS_ON_BOARD) { // Ensure there are always at least MIN_CARDS_ON_BOARD cards on the board
+    board.appendChild(generateUniqueCard(isEasy));
+  }
 }
+
+// Constants for magic numbers
+const SECONDS_IN_MINUTE = 60;
+const MILLISECONDS_IN_SECOND = 1000;
+const TEN = 10;
+const THREE_CARDS = 3;
+const MIN_CARDS_ON_BOARD = 12;
 
 // Event listeners for buttons
 document.getElementById("start-btn").addEventListener("click", () => {
-   toggleViews();
-   startTimer();
-   populateBoard();
+  toggleViews();
+  startTimer();
+  populateBoard();
 });
 
 document.getElementById("refresh-btn").addEventListener("click", populateBoard);
 
 document.getElementById("back-btn").addEventListener("click", () => {
-   clearInterval(timer);
-   toggleViews();
+  clearInterval(timer);
+  toggleViews();
 });
 
 // Initialize game setup on page load
 window.onload = () => {
-   toggleViews(); // Start with menu view visible
+  toggleViews(); // Start with menu view visible
 };
