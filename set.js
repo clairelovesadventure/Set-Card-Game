@@ -1,5 +1,12 @@
 'use strict'; // Use the global form of 'use strict'
 
+// Constants for magic numbers
+const SECONDS_IN_MINUTE = 60;
+const MILLISECONDS_IN_SECOND = 1000;
+const TEN = 10;
+const THREE_CARDS = 3;
+const MIN_CARDS_ON_BOARD = 12;
+
 // Constants for game attributes
 const ATTRIBUTES = {
   style: ["solid", "striped", "outline"],
@@ -147,13 +154,6 @@ function populateBoard() {
     board.appendChild(generateUniqueCard(isEasy));
   }
 }
-
-// Constants for magic numbers
-const SECONDS_IN_MINUTE = 60;
-const MILLISECONDS_IN_SECOND = 1000;
-const TEN = 10;
-const THREE_CARDS = 3;
-const MIN_CARDS_ON_BOARD = 12;
 
 // Event listeners for buttons
 document.getElementById("start-btn").addEventListener("click", () => {
