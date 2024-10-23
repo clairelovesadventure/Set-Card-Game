@@ -15,7 +15,7 @@ const ATTRIBUTES = {
   count: [1, 2, 3]
 };
 
-// Global variables
+// Module-global variables
 let timerId;
 let remainingSeconds;
 
@@ -127,40 +127,32 @@ function cardSelected(cardDiv) {
     } else {
       handleInvalidSet(selectedCards);
     }
-  }
-}
-
-/**
- * Handles a valid set of cards being selected.
- * @param {NodeList} selectedCards - The selected cards forming a valid set.
- */
-function handleValidSet(selectedCards) {
-  incrementSetsFound();
-
-  displayMessage(selectedCards, "SET!");
-
-  setTimeout(() => {
-    replaceCards(selectedCards);
+    selectedCards.forEach(card => card.classList.remove("selected"));
 
     if (document.querySelectorAll(".card").length < MIN_CARDS_ON_BOARD) {
       populateBoard();
     }
 
-    selectedCards.forEach(card => card.classList.remove("selected"));
-
- }, MILLISECONDS_IN_SECOND);
+ }
 }
 
 /**
- * Handles an invalid set of cards being selected.
- * @param {NodeList} selectedCards - The selected cards not forming a valid set.
- */
+* Handles a valid set of cards being selected.
+* @param {NodeList} selectedCards - The selected cards forming a valid set.
+*/
+function handleValidSet(selectedCards) {
+   incrementSetsFound();
+   displayMessage(selectedCards, "SET!");
+   setTimeout(() => replaceCards(selectedCards), MILLISECONDS_IN_SECOND);
+ }
+
+/**
+* Handles an invalid set of cards being selected.
+* @param {NodeList} selectedCards - The selected cards not forming a valid set.
+*/
 function handleInvalidSet(selectedCards) {
    displayMessage(selectedCards, "Not a Set");
-
-   setTimeout(() => {
-     selectedCards.forEach(card => card.classList.remove("selected"));
-   }, MILLISECONDS_IN_SECOND);
+   setTimeout(() => removeMessages(selectedCards), MILLISECONDS_IN_SECOND);
  }
 
 /**
@@ -174,6 +166,18 @@ function displayMessage(cards, message) {
      const p = document.createElement("p");
      p.textContent = message;
      card.appendChild(p);
+   });
+ }
+
+/**
+* Removes messages from cards and unhides images.
+* @param {NodeList} cards - The cards to remove messages from.
+*/
+function removeMessages(cards) {
+   cards.forEach(card => {
+     card.classList.remove("hide-imgs");
+     const p = card.querySelector("p");
+     if (p) p.remove();
    });
  }
 
@@ -209,6 +213,7 @@ function replaceCards(selectedCards) {
 
    selectedCards.forEach(card => {
      const newCard = generateUniqueCard(isEasy);
+     removeMessages([newCard]);
      card.replaceWith(newCard);
    });
  }
