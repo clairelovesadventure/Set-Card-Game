@@ -16,9 +16,8 @@ const ATTRIBUTES = {
 };
 
 // Global variables
-let timer;
-let timeRemaining;
-let setsFound = 0;
+let timerId;
+let remainingSeconds;
 
 /**
  * Toggles between menu and game views.
@@ -64,10 +63,13 @@ function generateUniqueCard(isEasy) {
   for (let i = 0; i < cardAttributes.count; i++) {
     const img = document.createElement("img");
     img.src = `img/${cardAttributes.style}-${cardAttributes.shape}-${cardAttributes.color}.png`;
+    img.alt = `${cardAttributes.style}-${cardAttributes.shape}-${cardAttributes.color}-${cardAttributes.count}`;
     cardDiv.appendChild(img);
   }
 
+  cardDiv.id = `${cardAttributes.style}-${cardAttributes.shape}-${cardAttributes.color}-${cardAttributes.count}`;
   cardDiv.addEventListener("click", () => cardSelected(cardDiv));
+
   return cardDiv;
 }
 
@@ -75,25 +77,25 @@ function generateUniqueCard(isEasy) {
  * Starts the game timer.
  */
 function startTimer() {
-  const selectedTime = parseInt(document.getElementById("timing-options").value, 10);
-  timeRemaining = selectedTime * SECONDS_IN_MINUTE; // Convert minutes to seconds
+  const selectedTime = parseInt(document.getElementById("timing-options").value, TEN);
+  remainingSeconds = selectedTime * SECONDS_IN_MINUTE; // Convert minutes to seconds
   updateTimerDisplay();
 
-  timer = setInterval(advanceTimer, MILLISECONDS_IN_SECOND); // Update every second
+  timerId = setInterval(advanceTimer, MILLISECONDS_IN_SECOND); // Update every second
 }
 
 /**
  * Advances the timer each second.
  */
 function advanceTimer() {
-  if (timeRemaining <= 0) {
-    clearInterval(timer);
+  if (remainingSeconds <= 0) {
+    clearInterval(timerId);
     console.warn("Time's up!"); // Replace alert with console warning
-    toggleViews();
+    disableBoard();
     return;
   }
 
-  timeRemaining--;
+  remainingSeconds--;
   updateTimerDisplay();
 }
 
@@ -101,8 +103,8 @@ function advanceTimer() {
  * Updates the timer display on the webpage.
  */
 function updateTimerDisplay() {
-  const minutes = Math.floor(timeRemaining / SECONDS_IN_MINUTE);
-  const seconds = timeRemaining % SECONDS_IN_MINUTE;
+  const minutes = Math.floor(remainingSeconds / SECONDS_IN_MINUTE);
+  const seconds = remainingSeconds % SECONDS_IN_MINUTE;
 
   document.getElementById("time").textContent =
     `${minutes}:${seconds < TEN ? '0' : ''}${seconds}`;
@@ -113,67 +115,131 @@ function updateTimerDisplay() {
  * @param {HTMLElement} cardDiv - The selected card element.
  */
 function cardSelected(cardDiv) {
+  if (remainingSeconds <= 0) return; // Prevent selection if time is up
+
   cardDiv.classList.toggle("selected");
 
   const selectedCards = document.querySelectorAll(".card.selected");
 
   if (selectedCards.length === THREE_CARDS) {
-    if (isSet(selectedCards)) {
-      setsFound++;
-      document.getElementById("sets-found").textContent = setsFound;
-      selectedCards.forEach(card => card.remove());
+    if (isASet(selectedCards)) {
+      handleValidSet(selectedCards);
+    } else {
+      handleInvalidSet(selectedCards);
     }
+  }
+}
 
-    selectedCards.forEach(card => card.classList.remove("selected"));
+/**
+ * Handles a valid set of cards being selected.
+ * @param {NodeList} selectedCards - The selected cards forming a valid set.
+ */
+function handleValidSet(selectedCards) {
+  incrementSetsFound();
+
+  displayMessage(selectedCards, "SET!");
+
+  setTimeout(() => {
+    replaceCards(selectedCards);
 
     if (document.querySelectorAll(".card").length < MIN_CARDS_ON_BOARD) {
       populateBoard();
     }
-  }
+
+    selectedCards.forEach(card => card.classList.remove("selected"));
+
+ }, MILLISECONDS_IN_SECOND);
 }
 
 /**
- * Checks if three cards form a valid set.
- * This function needs actual logic implementation.
- * @returns {boolean} True if valid set, otherwise false.
+ * Handles an invalid set of cards being selected.
+ * @param {NodeList} selectedCards - The selected cards not forming a valid set.
  */
-function isSet() {
-  /*
-   * Implement logic to check if the cards form a valid set based on game rules.
-   * This is a placeholder function and needs actual logic implementation.
-   */
-  return true;
-}
+function handleInvalidSet(selectedCards) {
+   displayMessage(selectedCards, "Not a Set");
+
+   setTimeout(() => {
+     selectedCards.forEach(card => card.classList.remove("selected"));
+   }, MILLISECONDS_IN_SECOND);
+ }
 
 /**
- * Populates the board with cards.
- */
+* Displays a message on the selected cards and hides images temporarily.
+* @param {NodeList} cards - The cards to display the message on.
+* @param {string} message - The message to display ("SET!" or "Not a Set").
+*/
+function displayMessage(cards, message) {
+   cards.forEach(card => {
+     card.classList.add("hide-imgs");
+     const p = document.createElement("p");
+     p.textContent = message;
+     card.appendChild(p);
+   });
+ }
+
+/**
+* Disables the board when time runs out or game ends.
+*/
+function disableBoard() {
+   const cards = document.querySelectorAll(".card");
+   cards.forEach(card => {
+     card.removeEventListener("click", () => cardSelected(card));
+     card.classList.remove("selected");
+   });
+
+   document.getElementById("refresh-btn").disabled = true;
+ }
+
+/**
+* Increments the count of sets found and updates the display.
+*/
+function incrementSetsFound() {
+   const setsFoundElement = document.getElementById("sets-found");
+   let setsFoundCount = parseInt(setsFoundElement.textContent, TEN);
+   setsFoundCount++;
+   setsFoundElement.textContent = setsFoundCount;
+ }
+
+/**
+* Replaces selected cards with new unique cards on the board.
+* @param {NodeList} selectedCards - The selected cards to be replaced.
+*/
+function replaceCards(selectedCards) {
+   const isEasy = document.getElementById("difficulty-options").value === "easy";
+
+   selectedCards.forEach(card => {
+     const newCard = generateUniqueCard(isEasy);
+     card.replaceWith(newCard);
+   });
+ }
+
+/**
+* Populates the board with cards ensuring minimum required are present.
+*/
 function populateBoard() {
-  const isEasy = document.getElementById("difficulty-options").value === "easy";
+   const isEasy = document.getElementById("difficulty-options").value === "easy";
+   const board = document.getElementById("board");
 
-  const board = document.getElementById("board");
-
-  while (board.children.length < MIN_CARDS_ON_BOARD) {
-    // Ensure there are always at least MIN_CARDS_ON_BOARD cards on the board
-    board.appendChild(generateUniqueCard(isEasy));
-  }
-}
+   while (board.children.length < MIN_CARDS_ON_BOARD) {
+     board.appendChild(generateUniqueCard(isEasy));
+   }
+ }
 
 // Event listeners for buttons
 document.getElementById("start-btn").addEventListener("click", () => {
-  toggleViews();
-  startTimer();
-  populateBoard();
+ toggleViews();
+ startTimer();
+ populateBoard();
 });
 
 document.getElementById("refresh-btn").addEventListener("click", populateBoard);
 
 document.getElementById("back-btn").addEventListener("click", () => {
-  clearInterval(timer);
-  toggleViews();
+ clearInterval(timerId);
+ toggleViews();
 });
 
 // Initialize game setup on page load
 window.onload = () => {
-  toggleViews(); // Start with menu view visible
+ toggleViews(); // Start with menu view visible
 };
