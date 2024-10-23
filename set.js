@@ -104,7 +104,8 @@ function updateTimerDisplay() {
   const minutes = Math.floor(timeRemaining / SECONDS_IN_MINUTE);
   const seconds = timeRemaining % SECONDS_IN_MINUTE;
 
-  document.getElementById("time").textContent = `${minutes}:${seconds < TEN ? '0' : ''}${seconds}`;
+  document.getElementById("time").textContent =
+    `${minutes}:${seconds < TEN ? '0' : ''}${seconds}`;
 }
 
 /**
@@ -133,13 +134,14 @@ function cardSelected(cardDiv) {
 
 /**
  * Checks if three cards form a valid set.
- * @param {NodeList} cards - The selected cards.
- * @returns {boolean} True if valid set, otherwise false.
+ * This function needs actual logic implementation.
  */
-function isSet(cards) {
-  // Implement logic to check if the cards form a valid set based on game rules
-  // This is a placeholder function and needs actual logic implementation
-  return true;
+function isSet() {
+   /*
+   Implement logic to check if the cards form a valid set based on game rules.
+   This is a placeholder function and needs actual logic implementation.
+   */
+   return true;
 }
 
 /**
