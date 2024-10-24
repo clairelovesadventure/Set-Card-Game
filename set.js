@@ -99,8 +99,8 @@
     }
   }
 
-  function cardSelected(event) {
-    const card = event.currentTarget;
+  function cardSelected() {
+    const card = this;
 
     // Toggle the selected class on the clicked card
     card.classList.toggle("selected");
