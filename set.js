@@ -101,10 +101,6 @@
 
   function cardSelected(event) {
     const card = event.currentTarget;
-    if (!card) {
-        console.warn("Event currentTarget is undefined");
-        return;
-    }
 
     // Toggle the selected class on the clicked card
     card.classList.toggle("selected");
@@ -178,32 +174,32 @@ function incrementSetCount() {
     setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
 }
 
-  function refreshBoard() {
-    setupBoard();
-  }
+function refreshBoard() {
+   setupBoard();
+}
 
-  function endGame() {
-    // Disable further interactions and refresh button
-    document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+function endGame() {
+   // Disable further interactions and refresh button
+   document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
 
-	// Disable the refresh button
-	const refreshBtn = document.getElementById("refresh-btn");
-	if (refreshBtn) refreshBtn.disabled = true;
+   // Disable the refresh button
+   const refreshBtn = document.getElementById("refresh-btn");
+   if (refreshBtn) refreshBtn.disabled = true;
 
-	// Stop timer
-	clearInterval(timerId);
+   // Stop timer
+   clearInterval(timerId);
 
-	// Remove selected class from all cards
-	clearSelection(document.querySelectorAll(".card"));
+   // Remove selected class from all cards
+   clearSelection(document.querySelectorAll(".card"));
 
-	console.log('Game ended');
+   console.log('Game ended');
 }
 
 function backToMenu() {
-	toggleViews();
-	clearInterval(timerId);
-	document.getElementById("set-count").textContent = "0";
-	document.getElementById("refresh-btn").disabled = false;
+   toggleViews();
+   clearInterval(timerId);
+   document.getElementById("set-count").textContent = "0";
+   document.getElementById("refresh-btn").disabled = false;
 }
 
 function isASet(selected) {
