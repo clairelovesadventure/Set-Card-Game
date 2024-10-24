@@ -243,7 +243,7 @@
     cards.forEach(card => card.removeEventListener("click", cardSelected));
     const refreshBtn = document.getElementById("refresh-btn");
     if (refreshBtn) {
-        refreshBtn.disabled = true;
+      refreshBtn.disabled = true;
     }
     clearInterval(timerId);
     clearSelection(Array.from(document.querySelectorAll(".card")));
