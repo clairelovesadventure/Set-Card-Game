@@ -16,6 +16,8 @@
   const MESSAGE_DURATION = 1000; // Duration to display messages
   const EASY_CARD_COUNT = 9; // Number of cards for easy mode
   const HARD_CARD_COUNT = 12; // Number of cards for hard mode
+  const ONE_SECOND = 1000; // One second in milliseconds
+  const MINUTES_IN_SECONDS = 60; // Seconds in a minute
 
   window.addEventListener("load", init);
 
@@ -93,9 +95,11 @@
     remainingSeconds = parseInt(document.querySelector("#menu-view select").value);
     updateTimerDisplay();
 
-    if (timerId) clearInterval(timerId);
+    if (timerId) {
+      clearInterval(timerId);
+    }
 
-    timerId = setInterval(advanceTimer, 1000);
+    timerId = setInterval(advanceTimer, ONE_SECOND);
   }
 
   /**
@@ -116,8 +120,8 @@
    * Updates the timer display in the UI.
    */
   function updateTimerDisplay() {
-    let minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
-    let seconds = String(remainingSeconds % 60).padStart(2, '0');
+    let minutes = String(Math.floor(remainingSeconds / MINUTES_IN_SECONDS)).padStart(2, '0');
+    let seconds = String(remainingSeconds % MINUTES_IN_SECONDS).padStart(2, '0');
     document.getElementById("time").textContent = `${minutes}:${seconds}`;
   }
 
@@ -174,7 +178,7 @@
       msgElem.textContent = message;
       card.appendChild(msgElem);
 
-      // Remove the message after 1 second and restore images
+      // Remove the message after MESSAGE_DURATION milliseconds and restore images
       setTimeout(() => {
         msgElem.remove();
         card.classList.remove("hide-imgs");
@@ -236,7 +240,9 @@
   function endGame() {
     document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
     const refreshBtn = document.getElementById("refresh-btn");
-    if (refreshBtn) refreshBtn.disabled = true;
+    if (refreshBtn) {
+      refreshBtn.disabled = true;
+    }
     clearInterval(timerId);
     clearSelection(Array.from(document.querySelectorAll(".card")));
   }
@@ -270,8 +276,10 @@
       let same =
         attributes[0][i] === attributes[1][i] &&
         attributes[1][i] === attributes[2][i];
-      if (!(same || diff)) return false;
+      if (!(same || diff)) {
+        return false;
+      }
     }
     return true;
   }
-})();
+})()
