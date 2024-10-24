@@ -202,7 +202,8 @@
    */
   function replaceCards(cards) {
     cards.forEach(card => {
-      let newCard = generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy");
+      let difficulty = document.querySelector('input[name="diff"]:checked').value;
+      let newCard = generateUniqueCard(difficulty === "easy");
       newCard.classList.add("hide-imgs");
       card.replaceWith(newCard);
 
@@ -237,7 +238,8 @@
    * Ends the game by disabling interactions and cleaning up.
    */
   function endGame() {
-    document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+    const cards = document.querySelectorAll(".card");
+    cards.forEach(card => card.removeEventListener("click", cardSelected));
     const refreshBtn = document.getElementById("refresh-btn");
     if (refreshBtn) refreshBtn.disabled = true;
     clearInterval(timerId);
@@ -273,7 +275,9 @@
       let same =
         attributes[0][i] === attributes[1][i] &&
         attributes[1][i] === attributes[2][i];
-      if (!(same || diff)) return false;
+      if (!(same || diff)) {
+        return false;
+      }
     }
     return true;
   }
