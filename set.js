@@ -93,7 +93,9 @@
     remainingSeconds = parseInt(document.querySelector("#menu-view select").value);
     updateTimerDisplay();
 
-    if (timerId) clearInterval(timerId);
+    if (timerId) {
+        clearInterval(timerId);
+    }
 
     timerId = setInterval(advanceTimer, 1000);
   }
