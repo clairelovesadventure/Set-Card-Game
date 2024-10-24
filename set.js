@@ -112,38 +112,64 @@
     let selectedCards = document.querySelectorAll(".card.selected");
 
     if (selectedCards.length === 3) {
+        // Immediately remove the .selected class before showing messages
+        clearSelection(selectedCards);
+
         const isSet = isASet(selectedCards);
         if (isSet) {
-            displayMessage(selectedCards, "SET!");
+            // Replace cards with new unique cards
             replaceCards(selectedCards);
             incrementSetCount();
+
+            // Display "SET!" message on each replaced card
+            selectedCards.forEach(card => {
+                displayMessage(card, "SET!");
+            });
         } else {
+            // Display "Not a Set" message
             displayMessage(selectedCards, "Not a Set");
         }
-        clearSelection(selectedCards); // Clear selection after checking for a set
     }
 }
 
 function displayMessage(cards, message) {
     cards.forEach(card => {
-      card.classList.add("hide-imgs");
-      let msgElem = document.createElement("p");
-      msgElem.textContent = message;
-      card.appendChild(msgElem);
-      setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
+        card.classList.add("hide-imgs");
+        let msgElem = document.createElement("p");
+        msgElem.textContent = message;
+        card.appendChild(msgElem);
+
+        // Remove the message after 1 second and restore images
+        setTimeout(() => {
+            msgElem.remove();
+            card.classList.remove("hide-imgs");
+        }, 1000);
     });
 }
 
 function clearSelection(cards) {
     cards.forEach(card => {
-      card.classList.remove("selected", "hide-imgs");
-      card.querySelectorAll("p").forEach(p => p.remove());
+        card.classList.remove("selected");
+        card.querySelectorAll("p").forEach(p => p.remove());
     });
 }
 
 function replaceCards(cards) {
     cards.forEach(card => {
-      card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
+        let newCard = generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy");
+
+        // Add "SET!" message to new card and hide images for 1 second
+        let msgElem = document.createElement("p");
+        msgElem.textContent = "SET!";
+        newCard.classList.add("hide-imgs");
+        newCard.appendChild(msgElem);
+
+        setTimeout(() => {
+            msgElem.remove();
+            newCard.classList.remove("hide-imgs");
+        }, 1000);
+
+        card.replaceWith(newCard);
     });
 }
 
