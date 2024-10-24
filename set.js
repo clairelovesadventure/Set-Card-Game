@@ -100,13 +100,10 @@
   }
 
   function cardSelected(event) {
-	let target = event.currentTarget;
-	if (!target) return; // Guard clause for undefined currentTarget
+    if (!event.currentTarget) return; // Guard clause for undefined currentTarget
 
-	let selectedCards = document.querySelectorAll(".card.selected");
-	if (selectedCards.length < 3) {
-	  target.classList.toggle("selected");
-	  selectedCards = document.querySelectorAll(".card.selected");
+    let selectedCards = document.querySelectorAll(".card.selected");
+
     if (selectedCards.length < 3) {
       event.currentTarget.classList.toggle("selected");
       selectedCards = document.querySelectorAll(".card.selected");
