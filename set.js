@@ -68,15 +68,15 @@
     updateTimerDisplay();
 
     timerId = setInterval(advanceTimer, 1000);
+  }
 
-    function advanceTimer() {
-      if (remainingSeconds > 0) {
-        remainingSeconds--;
-        updateTimerDisplay();
-      } else {
-        clearInterval(timerId);
-        endGame();
-      }
+  function advanceTimer() {
+    if (remainingSeconds > 0) {
+      remainingSeconds--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerId);
+      endGame();
     }
   }
 
@@ -158,19 +158,18 @@
   }
 
   function endGame() {
-    // Disable further interactions and refresh button
-    document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+   // Disable further interactions and refresh button
+   document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
 
-    document.getElementById("refresh-btn").disabled = true;
+   document.getElementById("refresh-btn").disabled = true;
 
-    // Stop timer
-    clearInterval(timerId);
+   // Stop timer
+   clearInterval(timerId);
 
-     // Other end game logic can be added here
-     // Remove selected class from all cards
-     clearSelection(document.querySelectorAll(".card"));
+   // Remove selected class from all cards
+   clearSelection(document.querySelectorAll(".card"));
 
-     console.log('Game ended');
+   console.log('Game ended');
 }
 
 function backToMenu() {
