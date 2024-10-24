@@ -1,7 +1,6 @@
 "use strict";
 
 (function() {
-
   // Required module globals
   let timerId;
   let remainingSeconds;
@@ -53,7 +52,6 @@
     }
 
     card.addEventListener("click", cardSelected);
-
     return card;
   }
 
@@ -101,7 +99,7 @@
   }
 
   function cardSelected(event) {
-    if (!event.currentTarget) return; // Ensure currentTarget is defined
+    if (!event.currentTarget) return; // Guard clause for undefined currentTarget
 
     let selectedCards = document.querySelectorAll(".card.selected");
 
@@ -112,13 +110,12 @@
       if (selectedCards.length === 3) {
         if (isASet(selectedCards)) {
           displayMessage(selectedCards, "SET!");
-          replaceCards(selectedCards);
-          incrementSetCount();
+          replaceCards(selectedCards); // Replace cards immediately
+          incrementSetCount(); // Increment count immediately
         } else {
           displayMessage(selectedCards, "Not a Set");
         }
-
-        clearSelection(selectedCards); // Immediate removal
+        clearSelection(selectedCards); // Clear selection immediately
       }
     }
   }
@@ -126,123 +123,76 @@
   function displayMessage(cards, message) {
     cards.forEach(card => {
       card.classList.add("hide-imgs");
-
       let msgElem = document.createElement("p");
       msgElem.textContent = message;
-
       card.appendChild(msgElem);
-
       setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
     });
-
-}
-
-function clearSelection(cards) {
-
-cards.forEach(card => {
-
-card.classList.remove("selected", "hide-imgs");
-
-card.querySelectorAll("p").forEach(p => p.remove());
-
-});
-
-}
-
-function replaceCards(cards) {
-
-cards.forEach(card => {
-
-card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
-
-});
-
-}
-
-function incrementSetCount() {
-
-let setCountElem = document.getElementById("set-count");
-
-setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
-
-}
-
-function refreshBoard() {
-
-setupBoard();
-
-}
-
-function endGame() {
-
-// Disable further interactions and refresh button
-
-document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
-
-document.getElementById("refresh-btn").disabled = true;
-
-  // Disable the refresh button
-  const refreshBtn = document.getElementById("refresh-btn");
-  if (refreshBtn) {
-    refreshBtn.disabled = true;
   }
 
-// Stop timer
+  function clearSelection(cards) {
+    cards.forEach(card => {
+      card.classList.remove("selected", "hide-imgs");
+      card.querySelectorAll("p").forEach(p => p.remove());
+    });
+  }
 
-clearInterval(timerId);
+  function replaceCards(cards) {
+    cards.forEach(card => {
+      card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
+    });
+  }
 
-// Remove selected class from all cards
+  function incrementSetCount() {
+    let setCountElem = document.getElementById("set-count");
+    setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
+  }
 
-clearSelection(document.querySelectorAll(".card"));
+  function refreshBoard() {
+    setupBoard();
+  }
 
-console.log('Game ended');
+  function endGame() {
+    // Disable further interactions and refresh button
+    document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
 
+	// Disable the refresh button
+	const refreshBtn = document.getElementById("refresh-btn");
+	if (refreshBtn) refreshBtn.disabled = true;
+
+	// Stop timer
+	clearInterval(timerId);
+
+	// Remove selected class from all cards
+	clearSelection(document.querySelectorAll(".card"));
+
+	console.log('Game ended');
 }
 
 function backToMenu() {
-
-toggleViews();
-
-clearInterval(timerId);
-
-document.getElementById("set-count").textContent = "0";
-
-document.getElementById("refresh-btn").disabled = false;
-
+	toggleViews();
+	clearInterval(timerId);
+	document.getElementById("set-count").textContent = "0";
+	document.getElementById("refresh-btn").disabled = false;
 }
 
 function isASet(selected) {
-
 // Provided isASet function from spec
+	let attributes = [];
+	for (let i = 0; i < selected.length; i++) {
+		attributes.push(selected[i].id.split("-"));
+	}
 
-let attributes = [];
-
-for (let i = 0; i < selected.length; i++) {
-
-attributes.push(selected[i].id.split("-"));
-
+	for (let i = 0; i < attributes[0].length; i++) {
+		let diff =
+			attributes[0][i] !== attributes[1][i] &&
+			attributes[1][i] !== attributes[2][i] &&
+			attributes[0][i] !== attributes[2][i];
+		let same =
+			attributes[0][i] === attributes[1][i] &&
+			attributes[1][i] === attributes[2][i];
+		if (!(same || diff)) return false;
+	}
+	return true;
 }
-
-for (let i = 0; i < attributes[0].length; i++) {
-
-let diff =
-attributes[0][i] !== attributes[1][i] &&
-attributes[1][i] !== attributes[2][i] &&
-attributes[0][i] !== attributes[2][i];
-
-let same =
-attributes[0][i] === attributes[1][i] &&
-attributes[1][i] === attributes[2][i];
-
-if (!(same || diff)) {
-
-return false;
-
-}
-}
-
-return true;
-
-}
-
 })();
