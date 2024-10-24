@@ -126,16 +126,13 @@
   }
 
   function displayMessage(cards, message) {
-	cards.forEach(card => {
-	  card.classList.add("hide-imgs");
-	  let msgElem = document.createElement("p");
-	  msgElem.textContent = message;
-	  card.appendChild(msgElem);
-	  setTimeout(() => {
-		msgElem.remove();
-		clearSelection(cards); // Move clearSelection here for immediate feedback after message disappears
-	  }, 1000);
-	});
+    cards.forEach(card => {
+      card.classList.add("hide-imgs");
+      let msgElem = document.createElement("p");
+      msgElem.textContent = message;
+      card.appendChild(msgElem);
+      setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
+    });
   }
 
   function clearSelection(cards) {
@@ -148,10 +145,9 @@
   }
 
   function replaceCards(cards) {
-	cards.forEach(card => {
-	  let newCard = generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy");
-	  card.replaceWith(newCard); // Ensure replacement happens immediately and in order
-	});
+    cards.forEach(card => {
+      card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
+    });
   }
 
   function incrementSetCount() {
