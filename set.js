@@ -124,7 +124,7 @@
     }
 }
 
-  function displayMessage(cards, message) {
+function displayMessage(cards, message) {
     cards.forEach(card => {
       card.classList.add("hide-imgs");
       let msgElem = document.createElement("p");
@@ -132,25 +132,25 @@
       card.appendChild(msgElem);
       setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
     });
-  }
+}
 
-  function clearSelection(cards) {
+function clearSelection(cards) {
     cards.forEach(card => {
       card.classList.remove("selected", "hide-imgs");
       card.querySelectorAll("p").forEach(p => p.remove());
     });
-  }
+}
 
-  function replaceCards(cards) {
+function replaceCards(cards) {
     cards.forEach(card => {
       card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
     });
-  }
+}
 
-  function incrementSetCount() {
+function incrementSetCount() {
     let setCountElem = document.getElementById("set-count");
     setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
-  }
+}
 
   function refreshBoard() {
     setupBoard();
