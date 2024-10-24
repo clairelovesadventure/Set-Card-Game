@@ -181,6 +181,12 @@ document.querySelectorAll(".card").forEach(card => card.removeEventListener("cli
 
 document.getElementById("refresh-btn").disabled = true;
 
+  // Disable the refresh button
+  const refreshBtn = document.getElementById("refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.disabled = true;
+  }
+
 // Stop timer
 
 clearInterval(timerId);
