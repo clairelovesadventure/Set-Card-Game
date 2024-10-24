@@ -101,28 +101,26 @@
 
   function cardSelected(event) {
 	if (!event.currentTarget) {
-		console.warn("Event currentTarget is undefined");
-		return;
-	  }
+	  console.warn("Event currentTarget is undefined");
+	  return;
+	}
+
+	// Toggle the selected class on the clicked card
 	event.currentTarget.classList.toggle("selected");
-    let selectedCards = document.querySelectorAll(".card.selected");
 
-    if (selectedCards.length < 3) {
-      event.currentTarget.classList.toggle("selected");
-      selectedCards = document.querySelectorAll(".card.selected");
+	let selectedCards = document.querySelectorAll(".card.selected");
 
-	  if (selectedCards.length === 3) {
-		const isSet = isASet(selectedCards); // Call immediately when three cards are selected
-		if (isSet) {
-		  displayMessage(selectedCards, "SET!");
-		  replaceCards(selectedCards);
-		  incrementSetCount();
-		} else {
-		  displayMessage(selectedCards, "Not a Set");
-		}
+	if (selectedCards.length === 3) {
+	  const isSet = isASet(selectedCards);
+	  if (isSet) {
+		displayMessage(selectedCards, "SET!");
+		replaceCards(selectedCards);
+		incrementSetCount();
+	  } else {
+		displayMessage(selectedCards, "Not a Set");
 	  }
-	  clearSelection(selectedCards); // Ensure this is called after checking for a set
-    }
+	  clearSelection(selectedCards); // Clear selection after checking for a set
+	}
   }
 
   function displayMessage(cards, message) {
@@ -136,12 +134,10 @@
   }
 
   function clearSelection(cards) {
-	setTimeout(() => { // Ensure immediate removal after message display delay
-	  cards.forEach(card => {
-		card.classList.remove("selected", "hide-imgs");
-		card.querySelectorAll("p").forEach(p => p.remove());
-	  });
-	}, 1000); // Match this delay with message display duration if needed
+    cards.forEach(card => {
+      card.classList.remove("selected", "hide-imgs");
+      card.querySelectorAll("p").forEach(p => p.remove());
+    });
   }
 
   function replaceCards(cards) {
