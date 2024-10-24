@@ -100,28 +100,29 @@
   }
 
   function cardSelected(event) {
-	if (!event.currentTarget) {
-	  console.warn("Event currentTarget is undefined");
-	  return;
-	}
+    const card = event.currentTarget;
+    if (!card) {
+        console.warn("Event currentTarget is undefined");
+        return;
+    }
 
-	// Toggle the selected class on the clicked card
-	event.currentTarget.classList.toggle("selected");
+    // Toggle the selected class on the clicked card
+    card.classList.toggle("selected");
 
-	let selectedCards = document.querySelectorAll(".card.selected");
+    let selectedCards = document.querySelectorAll(".card.selected");
 
-	if (selectedCards.length === 3) {
-	  const isSet = isASet(selectedCards);
-	  if (isSet) {
-		displayMessage(selectedCards, "SET!");
-		replaceCards(selectedCards);
-		incrementSetCount();
-	  } else {
-		displayMessage(selectedCards, "Not a Set");
-	  }
-	  clearSelection(selectedCards); // Clear selection after checking for a set
-	}
-  }
+    if (selectedCards.length === 3) {
+        const isSet = isASet(selectedCards);
+        if (isSet) {
+            displayMessage(selectedCards, "SET!");
+            replaceCards(selectedCards);
+            incrementSetCount();
+        } else {
+            displayMessage(selectedCards, "Not a Set");
+        }
+        clearSelection(selectedCards); // Clear selection after checking for a set
+    }
+}
 
   function displayMessage(cards, message) {
     cards.forEach(card => {
