@@ -71,13 +71,14 @@
   }
 
   function advanceTimer() {
-    if (remainingSeconds > 0) {
-      remainingSeconds--;
-      updateTimerDisplay();
-    } else {
-      clearInterval(timerId);
-      endGame();
-    }
+	if (remainingSeconds > 0) {
+	  remainingSeconds--;
+	  updateTimerDisplay();
+	  if (remainingSeconds === 0) {
+		clearInterval(timerId);
+		endGame();
+	  }
+	}
   }
 
   function updateTimerDisplay() {
