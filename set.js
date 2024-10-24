@@ -105,7 +105,7 @@
     // Toggle the selected class on the clicked card
     card.classList.toggle("selected");
 
-    let selectedCards = document.querySelectorAll(".card.selected");
+    let selectedCards = Array.from(document.querySelectorAll(".card.selected"));
 
     if (selectedCards.length === 3) {
       // Immediately remove the .selected class before showing messages
@@ -115,9 +115,7 @@
       if (isSet) {
         replaceCards(selectedCards);
         incrementSetCount();
-        selectedCards.forEach(card => {
-          displayMessage(card, "SET!");
-        });
+        displayMessage(selectedCards, "SET!");
       } else {
         displayMessage(selectedCards, "Not a Set");
       }
@@ -178,7 +176,7 @@
     const refreshBtn = document.getElementById("refresh-btn");
     if (refreshBtn) refreshBtn.disabled = true;
     clearInterval(timerId);
-    clearSelection(document.querySelectorAll(".card"));
+    clearSelection(Array.from(document.querySelectorAll(".card")));
     console.log('Game ended');
   }
 
