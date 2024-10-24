@@ -16,6 +16,7 @@
   const MESSAGE_DURATION = 1000; // Duration to display messages
   const EASY_CARD_COUNT = 9; // Number of cards for easy mode
   const HARD_CARD_COUNT = 12; // Number of cards for hard mode
+  const TIMER_INTERVAL = 1000; // Timer interval in milliseconds
 
   window.addEventListener("load", init);
 
@@ -94,10 +95,10 @@
     updateTimerDisplay();
 
     if (timerId) {
-        clearInterval(timerId);
+      clearInterval(timerId);
     }
 
-    timerId = setInterval(advanceTimer, 1000);
+    timerId = setInterval(advanceTimer, TIMER_INTERVAL);
   }
 
   /**
