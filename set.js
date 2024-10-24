@@ -111,40 +111,47 @@
       event.currentTarget.classList.toggle("selected");
       selectedCards = document.querySelectorAll(".card.selected");
 
-      if (selectedCards.length === 3) {
-        if (isASet(selectedCards)) {
-          displayMessage(selectedCards, "SET!");
-          replaceCards(selectedCards); // Replace cards immediately
-          incrementSetCount(); // Increment count immediately
-        } else {
-          displayMessage(selectedCards, "Not a Set");
-        }
-        clearSelection(selectedCards); // Clear selection immediately
-      }
+	  if (selectedCards.length === 3) {
+		const isSet = isASet(selectedCards); // Call immediately when three cards are selected
+		if (isSet) {
+		  displayMessage(selectedCards, "SET!");
+		  replaceCards(selectedCards);
+		  incrementSetCount();
+		} else {
+		  displayMessage(selectedCards, "Not a Set");
+		}
+	  }
+	  clearSelection(selectedCards); // Ensure this is called after checking for a set
     }
   }
 
   function displayMessage(cards, message) {
-    cards.forEach(card => {
-      card.classList.add("hide-imgs");
-      let msgElem = document.createElement("p");
-      msgElem.textContent = message;
-      card.appendChild(msgElem);
-      setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
-    });
+	cards.forEach(card => {
+	  card.classList.add("hide-imgs");
+	  let msgElem = document.createElement("p");
+	  msgElem.textContent = message;
+	  card.appendChild(msgElem);
+	  setTimeout(() => {
+		msgElem.remove();
+		clearSelection(cards); // Move clearSelection here for immediate feedback after message disappears
+	  }, 1000);
+	});
   }
 
   function clearSelection(cards) {
-    cards.forEach(card => {
-      card.classList.remove("selected", "hide-imgs");
-      card.querySelectorAll("p").forEach(p => p.remove());
-    });
+	setTimeout(() => { // Ensure immediate removal after message display delay
+	  cards.forEach(card => {
+		card.classList.remove("selected", "hide-imgs");
+		card.querySelectorAll("p").forEach(p => p.remove());
+	  });
+	}, 1000); // Match this delay with message display duration if needed
   }
 
   function replaceCards(cards) {
-    cards.forEach(card => {
-      card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
-    });
+	cards.forEach(card => {
+	  let newCard = generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy");
+	  card.replaceWith(newCard); // Ensure replacement happens immediately and in order
+	});
   }
 
   function incrementSetCount() {
