@@ -17,6 +17,7 @@
   const EASY_CARD_COUNT = 9; // Number of cards for easy mode
   const HARD_CARD_COUNT = 12; // Number of cards for hard mode
   const TIMER_INTERVAL = 1000; // Timer interval in milliseconds
+  const SECONDS_IN_A_MINUTE = 60;
 
   window.addEventListener("load", init);
 
@@ -119,8 +120,8 @@
    * Updates the timer display in the UI.
    */
   function updateTimerDisplay() {
-    let minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
-    let seconds = String(remainingSeconds % 60).padStart(2, '0');
+    let minutes = String(Math.floor(remainingSeconds / SECONDS_IN_A_MINUTE)).padStart(2, '0');
+    let seconds = String(remainingSeconds % SECONDS_IN_A_MINUTE).padStart(2, '0');
     document.getElementById("time").textContent = `${minutes}:${seconds}`;
   }
 
@@ -241,7 +242,9 @@
     const cards = document.querySelectorAll(".card");
     cards.forEach(card => card.removeEventListener("click", cardSelected));
     const refreshBtn = document.getElementById("refresh-btn");
-    if (refreshBtn) refreshBtn.disabled = true;
+    if (refreshBtn) {
+        refreshBtn.disabled = true;
+    }
     clearInterval(timerId);
     clearSelection(Array.from(document.querySelectorAll(".card")));
   }
