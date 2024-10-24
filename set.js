@@ -67,6 +67,8 @@
     remainingSeconds = parseInt(document.querySelector("#menu-view select").value);
     updateTimerDisplay();
 
+    if (timerId) clearInterval(timerId);
+
     timerId = setInterval(advanceTimer, 1000);
   }
 
@@ -99,6 +101,8 @@
   }
 
   function cardSelected(event) {
+    if (!event.currentTarget) return; // Ensure currentTarget is defined
+
     let selectedCards = document.querySelectorAll(".card.selected");
 
     if (selectedCards.length < 3) {
@@ -112,7 +116,6 @@
           incrementSetCount();
         } else {
           displayMessage(selectedCards, "Not a Set");
-          setTimeout(() => clearSelection(selectedCards), 1000);
         }
 
         clearSelection(selectedCards); // Immediate removal
@@ -128,64 +131,90 @@
       msgElem.textContent = message;
 
       card.appendChild(msgElem);
+
+      setTimeout(() => msgElem.remove(), 1000); // Ensure messages disappear
     });
 
-    setTimeout(() => clearSelection(cards), 1000); // Ensure messages disappear
-  }
+}
 
-  function clearSelection(cards) {
-    cards.forEach(card => {
-      card.classList.remove("selected", "hide-imgs");
+function clearSelection(cards) {
 
-      card.querySelectorAll("p").forEach(p => p.remove());
-    });
-  }
+cards.forEach(card => {
 
-  function replaceCards(cards) {
-    cards.forEach(card => {
-      card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
-    });
-  }
+card.classList.remove("selected", "hide-imgs");
 
-  function incrementSetCount() {
-    let setCountElem = document.getElementById("set-count");
+card.querySelectorAll("p").forEach(p => p.remove());
 
-    setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
-  }
+});
 
-  function refreshBoard() {
-    setupBoard();
-  }
+}
 
-  function endGame() {
-   // Disable further interactions and refresh button
-   document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+function replaceCards(cards) {
 
-   document.getElementById("refresh-btn").disabled = true;
+cards.forEach(card => {
 
-   // Stop timer
-   clearInterval(timerId);
+card.replaceWith(generateUniqueCard(document.querySelector('input[name="diff"]:checked').value === "easy"));
 
-   // Remove selected class from all cards
-   clearSelection(document.querySelectorAll(".card"));
+});
 
-   console.log('Game ended');
+}
+
+function incrementSetCount() {
+
+let setCountElem = document.getElementById("set-count");
+
+setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
+
+}
+
+function refreshBoard() {
+
+setupBoard();
+
+}
+
+function endGame() {
+
+// Disable further interactions and refresh button
+
+document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+
+document.getElementById("refresh-btn").disabled = true;
+
+// Stop timer
+
+clearInterval(timerId);
+
+// Remove selected class from all cards
+
+clearSelection(document.querySelectorAll(".card"));
+
+console.log('Game ended');
+
 }
 
 function backToMenu() {
+
 toggleViews();
+
 clearInterval(timerId);
 
 document.getElementById("set-count").textContent = "0";
+
 document.getElementById("refresh-btn").disabled = false;
+
 }
 
 function isASet(selected) {
+
 // Provided isASet function from spec
+
 let attributes = [];
 
 for (let i = 0; i < selected.length; i++) {
+
 attributes.push(selected[i].id.split("-"));
+
 }
 
 for (let i = 0; i < attributes[0].length; i++) {
