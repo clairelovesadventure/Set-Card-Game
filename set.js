@@ -1,6 +1,7 @@
 "use strict";
 
 (function() {
+
   // Required module globals
   let timerId;
   let remainingSeconds;
@@ -43,13 +44,16 @@
     let card = document.createElement("div");
     card.classList.add("card");
     card.id = id;
+
     for (let i = 0; i < attributes[3]; i++) {
       let img = document.createElement("img");
       img.src = `img/${attributes[0]}-${attributes[1]}-${attributes[2]}.png`;
       img.alt = id;
       card.appendChild(img);
     }
+
     card.addEventListener("click", cardSelected);
+
     return card;
   }
 
@@ -62,16 +66,17 @@
   function startTimer() {
     remainingSeconds = parseInt(document.querySelector("#menu-view select").value);
     updateTimerDisplay();
-    timerId = setInterval(advanceTimer, 1000);
-  }
 
-  function advanceTimer() {
-    if (remainingSeconds > 0) {
-      remainingSeconds--;
-      updateTimerDisplay();
-    } else {
-      clearInterval(timerId);
-      endGame();
+    timerId = setInterval(advanceTimer, 1000);
+
+    function advanceTimer() {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerId);
+        endGame();
+      }
     }
   }
 
@@ -107,8 +112,10 @@
           incrementSetCount();
         } else {
           displayMessage(selectedCards, "Not a Set");
+          setTimeout(() => clearSelection(selectedCards), 1000);
         }
-        setTimeout(() => clearSelection(selectedCards), 1000);
+
+        clearSelection(selectedCards); // Immediate removal
       }
     }
   }
@@ -116,15 +123,20 @@
   function displayMessage(cards, message) {
     cards.forEach(card => {
       card.classList.add("hide-imgs");
+
       let msgElem = document.createElement("p");
       msgElem.textContent = message;
+
       card.appendChild(msgElem);
     });
+
+    setTimeout(() => clearSelection(cards), 1000); // Ensure messages disappear
   }
 
   function clearSelection(cards) {
     cards.forEach(card => {
       card.classList.remove("selected", "hide-imgs");
+
       card.querySelectorAll("p").forEach(p => p.remove());
     });
   }
@@ -137,6 +149,7 @@
 
   function incrementSetCount() {
     let setCountElem = document.getElementById("set-count");
+
     setCountElem.textContent = parseInt(setCountElem.textContent) + 1;
   }
 
@@ -145,41 +158,57 @@
   }
 
   function endGame() {
-   // Disable further interactions and refresh button
-   document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
-   document.getElementById("refresh-btn").disabled = true;
-   // Stop timer
-   clearInterval(timerId);
-   // Keep view until back button is clicked
-   // Other end game logic can be added here
+    // Disable further interactions and refresh button
+    document.querySelectorAll(".card").forEach(card => card.removeEventListener("click", cardSelected));
+
+    document.getElementById("refresh-btn").disabled = true;
+
+    // Stop timer
+    clearInterval(timerId);
+
+     // Other end game logic can be added here
+     // Remove selected class from all cards
+     clearSelection(document.querySelectorAll(".card"));
+
+     console.log('Game ended');
 }
 
 function backToMenu() {
-   toggleViews();
-   clearInterval(timerId);
-   document.getElementById("set-count").textContent = "0";
-   document.getElementById("refresh-btn").disabled = false;
+toggleViews();
+clearInterval(timerId);
+
+document.getElementById("set-count").textContent = "0";
+document.getElementById("refresh-btn").disabled = false;
 }
 
 function isASet(selected) {
-   // Provided isASet function from spec
-   let attributes = [];
-   for (let i = 0; i < selected.length; i++) {
-     attributes.push(selected[i].id.split("-"));
-   }
-   for (let i = 0; i < attributes[0].length; i++) {
-     let diff =
-       attributes[0][i] !== attributes[1][i] &&
-       attributes[1][i] !== attributes[2][i] &&
-       attributes[0][i] !== attributes[2][i];
-     let same =
-       attributes[0][i] === attributes[1][i] &&
-       attributes[1][i] === attributes[2][i];
-     if (!(same || diff)) {
-       return false;
-     }
-   }
-   return true;
+// Provided isASet function from spec
+let attributes = [];
+
+for (let i = 0; i < selected.length; i++) {
+attributes.push(selected[i].id.split("-"));
+}
+
+for (let i = 0; i < attributes[0].length; i++) {
+
+let diff =
+attributes[0][i] !== attributes[1][i] &&
+attributes[1][i] !== attributes[2][i] &&
+attributes[0][i] !== attributes[2][i];
+
+let same =
+attributes[0][i] === attributes[1][i] &&
+attributes[1][i] === attributes[2][i];
+
+if (!(same || diff)) {
+
+return false;
+
+}
+}
+
+return true;
+
 }
 
 })();
