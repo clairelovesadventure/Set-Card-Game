@@ -2,6 +2,28 @@
 Project Overview
 A web-based implementation of the Set card game where players need to find combinations of three cards that follow specific rules.
 
+### Rules of Set
+This assignment is inspired by the classic SET! Card game. A game consists of a board of cards. Each card has one of three options for 4 different "attributes":
+
+| Attribute | **Options**  | | |
+|-------    |---------|---------|----------|
+| STYLE     | solid   | outline | striped  |
+| COLOR     | green   | purple  | red      |
+| SHAPE     | diamond | oval    | squiggle |
+| COUNT     | 1       | 2       | 3        |
+
+The goal of the game is to find as many "Sets" of 3 cards such that for each attribute, all cards share the attribute or no cards share the attribute. For example, the following three cards build a Set because none share style, color, or shape attributes but they all share the count attribute.
+
+<p>
+  <img src="./img/sample.png" width="50%" alt="Example of something that is a set">
+</p>
+
+However, the following three cards do not form a Set since the color attribute does not follow the "all or none" requirement (purple is shared by the first and third card, but not the second).
+
+<p>
+  <img src="./img/Not-set.png.png" width="50%" alt="Example of something that is not a Set">
+</p>
+
 ## Technology Stack
 HTML: Page structure (provided)
 CSS: Page styling (provided)
